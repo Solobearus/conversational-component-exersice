@@ -3,12 +3,14 @@ import { ChatEntry } from "@conversationalcomponents/chat-window/types";
 import { ChatWindow, useUserTyping, useBotTyping } from "@conversationalcomponents/chat-window";
 import { avatars } from "./avatars";
 import { getBotReply } from "./getBotReply";
+import { getUserReply } from "./getUserReply";
 import { ChatOptionsPanel } from './ChatOptionsPanel';
 
 export const Chat = () => {
     const [content, setContent] = useState<ChatEntry[]>([]);
     const [lastInputValue, setLastInputValue] = useState("");
     const [lastUnsubmittedInput, setLastUnsubmittedInput] = useState("");
+    const [userReplies, setUserReplies] = useState<string[]>(["hi"]);
 
     useEffect(() => {
         const lastEntry = content.length && content[content.length - 1];
@@ -31,23 +33,17 @@ export const Chat = () => {
         if (!lastEntry || lastEntry.isUser) return;
         lastEntry.message = getBotReply();
         lastEntry.isLoading = false;
+        setUserReplies(getUserReply())
+
     }, [content, isBotDoneTyping]);
 
-    const onsubmit =( text: string) =>{
+    const onsubmit = (text: string) => {
 
-            const newContent = [...content];
-        
-            newContent.push({
-                isUser: true,
-                message: text,
-                avatar: avatars.user,
-                id: 'test',
-                isLoading: false,
-            });
-            setContent(newContent);
+        setLastUnsubmittedInput(text);
+        setTimeout(() => {
             setLastInputValue(text);
-            // setContent(newContent);
-    
+        }, 0);
+
     }
     return (
         <ChatWindow
@@ -55,7 +51,7 @@ export const Chat = () => {
             content={content}
             footer={
                 <ChatOptionsPanel
-                    options={['test', 'test2']}
+                    options={userReplies}
                     onSubmit={onsubmit}>
                 </ChatOptionsPanel>
             }

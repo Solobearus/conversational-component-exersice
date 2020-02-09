@@ -9,13 +9,19 @@ interface WelcomeProps {
 
 export const ChatOptionsPanel: React.FC<WelcomeProps> = ({ options, onSubmit }) => {
     return (
-        <div>
+        <div
+            style={{
+                display: "flex",
+                padding: "5px",
+            }}>
             {options && options.map(option => (
                 <Chip
+                    style={{ margin: "5px" }}
                     label={option}
                     onClick={() => onSubmit(option)}>
                 </Chip>
-            ))}
-        </div>
+            ))
+            }
+        </div >
     )
 }
